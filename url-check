@@ -14,7 +14,7 @@ headers = {'headers':'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:51.0) Gecko/201
 from bs4 import BeautifulSoup
 import time, requests
 limiter = "'" # с кавычками чтобы видеть пробелы на конце или не вставленные слова
-
+tagslist = ['title', 'h1', 'h2']
 with open('urlcheck.txt', 'w') as the_file:
 	for line in urlslist:
 		if line:
@@ -26,18 +26,21 @@ with open('urlcheck.txt', 'w') as the_file:
 				soup = BeautifulSoup(html, features="lxml")
 				if soup:
 					#print(soup)
-					title = limiter + soup.title.string + limiter 
-					h1 = limiter + soup.find('h1').text + limiter
-					print('Title:', title)
-					print('   H1:', h1)
-					text = line + '\n'
-					the_file.write(text)
-					for h2 in soup.find_all('h2'):
-						h2 = limiter + h2.text + limiter
-						#print(link.get('href'))
-						print('   H2:', h2)
-						text = '<H2> ' + h2 + '\n'
+					if 'title' in tagslist:
+						title = limiter + soup.title.string + limiter 
+					if 'h1' in tagslist:
+						h1 = limiter + soup.find('h1').text + limiter
+						print('Title:', title)
+						print('   H1:', h1)
+						text = line + '\n'
 						the_file.write(text)
+					if 'h2' in tagslist:
+						for h2 in soup.find_all('h2'):
+							h2 = limiter + h2.text + limiter
+							#print(link.get('href'))
+							print('   H2:', h2)
+							text = '<H2> ' + h2 + '\n'
+							the_file.write(text)
 					
 					the_file.write('\n')
 					time.sleep(1)
